@@ -11,3 +11,11 @@ function App() {
 }
 
 export default App;
+
+
+{/* {
+            <div>
+                <h2>{validCode}</h2>
+                <button onClick={getCode}>Get valid code</button>
+            </div>
+            } */}
