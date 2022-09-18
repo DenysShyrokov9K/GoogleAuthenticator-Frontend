@@ -126,7 +126,7 @@ const GoogleAuthenticator = () => {
             onChange={(e) => {setInputValue(e.target.value)}}
             />
             <button onClick={verifyCode}>Verify</button>
-            {isCodeValid !== null && <div>{isCodeValid ? '✅' : '❌'}</div>}
+            {isCodeValid !== null && <div>{isCodeValid ? 'Yes' : 'No'}</div>}
         </div>
     )
 }
