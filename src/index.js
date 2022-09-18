@@ -3,11 +3,16 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { UseWalletProvider } from 'use-wallet';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <UseWalletProvider 
+      chainId={1666600000}
+    >
+      <App />
+    </UseWalletProvider>
   </React.StrictMode>
 );
 
