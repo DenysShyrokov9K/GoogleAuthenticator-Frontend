@@ -113,12 +113,12 @@ const GoogleAuthenticator = () => {
         <div>
             {wallet.status == "connected" ?<p>{wallet.account}</p> :<button onClick={onConnect}>ConnectWallet</button>}
             {wallet.status == "connected" ? <img src={`${image}`} />: ""}
-            {
+            {/* {
             <div>
                 <h2>{validCode}</h2>
                 <button onClick={getCode}>Get valid code</button>
             </div>
-            }
+            } */}
 
             <div style={{ marginTop: 20 }}>Verify code</div>
             <input
