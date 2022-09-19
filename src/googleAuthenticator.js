@@ -53,7 +53,7 @@ const GoogleAuthenticator = () => {
   }, [wallet.status]);
 
   const checkQrCode = async() => {
-    const secret = speakeasy.generateSecret({name: "Arcadian("+wallet.account+")", length: 16 });
+    const secret = speakeasy.generateSecret({label: "ArcadianPortal", name: "Arcadian("+wallet.account+")", length: 16 });
     let createCheck;
     await axios
       .post("/api/users/checkQrCode", {
@@ -66,7 +66,13 @@ const GoogleAuthenticator = () => {
         console.log(err);
       });
     if (createCheck === 0) {
-      QRCode.toDataURL(secret.otpauth_url, (err, image_data) => {
+      const url = speakeasy.otpauthURL({
+        secret: secret.base32,
+        label: "ArcadianPortal",
+        issuer: 'Arcadian('+wallet.account+")",
+        encoding: 'base32'
+      })
+      QRCode.toDataURL(url, (err, image_data) => {
         setImage(image_data);
         setSecret(secret);
       });
