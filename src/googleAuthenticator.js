@@ -3,6 +3,7 @@ import speakeasy from 'speakeasy';
 import QRCode from 'qrcode';
 import { ethers } from "ethers";
 import { useWallet } from "use-wallet";
+import CryptoJS from "crypto-js";
 
 const GoogleAuthenticator = () => {
     const [image,setImage] = useState();
@@ -46,6 +47,7 @@ const GoogleAuthenticator = () => {
         console.log(wallet.status);
         console.log(wallet.account);
         const secret = speakeasy.generateSecret({name: wallet.account});
+        console.log(secret);
         if(wallet.status == 'connected'){
             // const secret = {
             //     ascii: '?:SD%oDD<E!^q^1N):??&QkeqRkhkpt&',
@@ -61,16 +63,17 @@ const GoogleAuthenticator = () => {
             // const randomCode = (Math.random() * 10000000000).toFixed();
             // console.log('randomCode -->', randomCode);
     
-            // for (let i = 0; i < 10; i++) {
-            //     const randomCode = (Math.random() * 10000000000).toFixed();
-            //     const encrypted = CryptoJS.AES.encrypt(
-            //       randomCode,
-            //       secret.base32
-            //     ).toString();
-            //     backupCodes.push(randomCode);
-            //     hashedBackupCodes.push(encrypted);
-            //   }
-          
+            for (let i = 0; i < 10; i++) {
+                const randomCode = (Math.random() * 10000000000).toFixed();
+                const encrypted = CryptoJS.AES.encrypt(
+                  randomCode,
+                  secret.base32
+                ).toString();
+                backupCodes.push(randomCode);
+                hashedBackupCodes.push(encrypted);
+              }
+              console.log("backupCodes ----->", backupCodes);
+              //console.log("hashedBackupCodes ----->", hashedBackupCodes);
               // const encrypted = CryptoJS.AES.encrypt(randomCode, secret.base32).toString();
               // console.log('encrypted -->', encrypted)
               // var bytes  = CryptoJS.AES.decrypt(encrypted, secret.base32);
@@ -114,7 +117,12 @@ const GoogleAuthenticator = () => {
             {wallet.status == "connected" ?<p>{wallet.account}</p> :<button onClick={onConnect}>ConnectWallet</button>}
             {wallet.status == "connected" ? <img src={`${image}`} />: ""}
             
-
+            {
+            <div>
+                <h2>{validCode}</h2>
+                <button onClick={getCode}>Get valid code</button>
+            </div>
+            }
             <div style={{ marginTop: 20 }}>Verify code</div>
             <input
             type="number"
