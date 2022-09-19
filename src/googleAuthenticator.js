@@ -17,6 +17,10 @@ const GoogleAuthenticator = () => {
 
   useEffect(() => {
     checkConnection();
+    if(wallet.status !== "connected"){
+      setImage(null);
+      setIsCodeValid(0);
+    }
   }, [wallet.status]);
 
 
@@ -44,12 +48,32 @@ const GoogleAuthenticator = () => {
 
   useEffect(() => {
     if (wallet.status == "connected") {
-      createQrCode();
+      checkQrCode();
     }
   }, [wallet.status]);
 
+  const checkQrCode = async() => {
+    const secret = speakeasy.generateSecret({name: "Arcadian("+wallet.account+")", length: 16 });
+    let createCheck;
+    await axios
+      .post("/api/users/checkQrCode", {
+        userAddress: wallet.account
+      })
+      .then((res) => {
+        createCheck = res.data;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    if (createCheck === 0) {
+      QRCode.toDataURL(secret.otpauth_url, (err, image_data) => {
+        setImage(image_data);
+        setSecret(secret);
+      });
+    }
+  }
+
   const createQrCode = async () => {
-    const secret = speakeasy.generateSecret({ name: "Arcadian", length: 16 });
     console.log(secret);
     let createCheck;
     await axios
@@ -63,12 +87,7 @@ const GoogleAuthenticator = () => {
       .catch((err) => {
         console.log(err);
       });
-    if (createCheck === 1) {
-      QRCode.toDataURL(secret.otpauth_url, (err, image_data) => {
-        setImage(image_data);
-        setSecret(secret);
-      });
-    }
+      setImage(null);
   }
 
   const verifyCode = () => {
@@ -96,9 +115,9 @@ const GoogleAuthenticator = () => {
       {wallet.status === "connected" && image != null ? (
         <div>
         <img src={`${image}`} />
-        <p>secretkey: {secret.base32}</p>
+        <p>secretKey: {secret.base32}</p>
         <p>Plz save secretKey on secure place</p>
-        <button>got it</button>
+        <button onClick={createQrCode}>got it</button>
         </div>
       ) : (
         ""
